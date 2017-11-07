@@ -1,0 +1,43 @@
+#!/bin/bash
+#exip: tool that send an email to you when your external ip changes:
+#use: exip emailaddress &
+#author: @rmitnik @github
+#
+#This tool comes without installation so you must to install lynx and mailx, if you use another you can modify this 
+# first line of this script:
+mailer="mail" #command to be used as mailer
+
+deliver=$1 #deliver only if an email address is given
+
+#init oold_ip:
+if [ -f public.ip ]
+then
+	echo "public.ip exists ... fetching"
+	old_ip="`cat ./public.ip 2> /dev/null`"
+else
+	echo "public.ip don't exists ...creating"
+	old_ip="`lynx --source http://www.adsl4ever.com/ip | grep '<h1>' | \
+                awk '{print $1}' | grep '<h1>' | cut --delimiter='>' -f2` "
+	echo $old_ip > ./public.ip
+fi
+
+#loops looking for changes:
+while true
+do
+	new_ip="`lynx --source http://www.adsl4ever.com/ip | grep '<h1>' | \
+		awk '{print $1}' | grep '<h1>' | cut --delimiter='>' -f2` "
+	
+	if [ "$old_ip" != "$new_ip" ];then
+		echo "exip says: $new_ip is not equal to $old_ip "
+		if [ $deliver ];then #send an email to $1 if deliver=true
+			echo "... and sends to you an email to $1"
+			echo $new_ip | mail $1
+		else
+		 	echo "... but don't email to you because not email address is given."
+		fi
+		echo $new_ip > ./public.ip
+	fi
+	#echo "sleeping" #debug line
+	sleep 5m
+done
+#exip __ENDS
