@@ -33,7 +33,7 @@ do
 			echo "... and sends to you an email to $1"
 			echo $new_ip | mail $1
 		else
-		 	echo "... but don't email to you because not email address is given."
+		 	echo "... but don't email to you because no email address is given."
 		fi
 		echo $new_ip > ./public.ip
 	fi
