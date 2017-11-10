@@ -9,7 +9,7 @@ mailer="mail" #command to be used as mailer
 
 deliver=$1 #deliver only if an email address is given
 
-#init oold_ip:
+#init old_ip:
 if [ -f public.ip ]
 then
 	echo "public.ip exists ... fetching"
